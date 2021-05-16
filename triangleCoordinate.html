@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Coordinator</title>
+    <meta charset="utf-8">
+    
+</head>
+<body>
+    <h2>Triangle Calculator</h2>
+    <label for="xa">XA: </label>
+    <input type="number" id="xa">
+    
+    <label for="ya">YA: </label>
+    <input type="number" id="ya">
+    <br>
+    <label for="xb">XB: </label>
+    <input type="number" id="xb">
+    
+    <label for="yb">YB: </label>
+    <input type="number" id="yb">
+    <br>
+    <label for="xc">XC: </label>
+    <input type="number" id="xc">
+    
+    <label for="yc">YC: </label>
+    <input type="number" id="yc">
+    <br>
+    <button onclick="revealTriangle()">Calculate</button>
+    <br>
+
+    <br>
+    <canvas id="triangleDrawing" width="1000" height="500" style="border: 1px solid black;"></canvas>
+    <p id="sides"></p>
+
+    <script>
+        function getTriangleAngleType(a, b, c){
+            if (a*a + b*b == c*c || a*a + c*c == b*b || c*c + b*b == a*a){
+                return "Right Angle";
+            } else if (a*a + b*b > c*c || a*a + c*c > b*b || c*c + b*b > a*a){
+                return "Obtuse Angle";
+            } else {
+                return "Acute Angle";
+            }
+        }
+
+        function getTriangleSideType(a, b, c){
+            if (a == b && b == c && c == a) {
+                return "Equilateral Triangle";
+            } else if (a == b || b == c || c == a) {
+                return "Isoscelese Triangle";
+            } else {
+                return "Scalene Triangle";
+            }
+        }
+
+        function getTriangleArea(a, b, c){
+            var halfp = getPerimeter(a, b, c) / 2;
+            return Math.sqrt(halfp * (halfp - a) * (halfp - b) * (halfp - c));
+        }
+
+        function drawTriangle(xa, ya, xb, yb, xc, yc){
+            var c = document.getElementById("triangleDrawing")
+            var ctx = c.getContext("2d")
+            ctx.moveTo(xa, ya);
+            ctx.lineTo(xb, yb); //AB
+            ctx.lineTo(xc, yc); //BC
+            ctx.lineTo(xa, ya); //AC
+            ctx.stroke();
+            ctx.fillStyle = "red";
+            ctx.fill();
+        }
+
+        function getPerimeter(a, b, c){
+            return a + b + c;
+        }
+
+        function revealTriangle(){
+            var xa = parseFloat(document.getElementById("xa").value);
+            var ya = parseFloat(document.getElementById("ya").value);
+            var xb = parseFloat(document.getElementById("xb").value);
+            var yb = parseFloat(document.getElementById("yb").value);
+            var xc = parseFloat(document.getElementById("xc").value);
+            var yc = parseFloat(document.getElementById("yc").value);
+            drawTriangle(xa, ya, xb, yb, xc, yc);
+
+            var AB = Math.sqrt((xa - xb)*(xa - xb) + (ya - yb)*(ya - yb));
+            var AC = Math.sqrt((xa - xc)*(xa - xb) + (ya - yc)*(ya - yc));
+            var CB = Math.sqrt((xc - xb)*(xc - xb) + (yc - yb)*(yc - yb));
+            var paragraph = document.getElementById("sides");
+            paragraph.innerHTML = "AB = " + AB + "<br> AC = " + AC + "<br> CB" + CB;
+
+            var P = getPerimeter(AB, CB, AC);
+            document.getElementById("sides").innerHTML = 
+                `AB = ${AB}<br>BC = ${CB}<br>CA = ${AC}<br>` +
+                `Perimeter: ${P}<br>` +
+                `Area: ${getTriangleArea(AB, AC, CB)}<br>` +
+                `Half Perimeter: ${P / 2}<br>` +
+                `Angle Type: ${getTriangleAngleType(AB, AC, CB)}<br>` +
+                `Side Type: ${getTriangleSideType(AB, AC, CB)}<br>`;
+        }
+    </script>
+</body>
+</html>
